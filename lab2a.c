@@ -1,58 +1,57 @@
+#include<stdio.h>
 #include<GL/glut.h>
 
-float angle=0.0;
-
-void update(int value){
-    angle+=0.2f;
-    glutPostRedisplay();
-    glutTimerFunc(10,update,0);
-
-}
+int x1,y1,x2,y2;
 
 void display()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glTranslatef(0.3f,0,0);
-    glRotatef(angle,0,1,0);
-    glTranslatef(-0.3f,0,0);
+    int dx = abs(x2-x1);
+    int dy = abs(y2-y1);
+    int pk = 2*dy-dx;
+    int x=x1;
+    int y=y1;
+    for(int i=0;i<dx;i++)
+    {
+        glColor3f(0,1,0);
+        glBegin(GL_POINTS);
+        glVertex2f(x,y);
+        glEnd();
 
-    glBegin(GL_TRIANGLES);
-        glVertex2f(0,0);
-        glVertex2f(0.6,0);
-        glVertex2f(0.3,0.5);
-    glEnd();
-    glPopMatrix();
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glRotatef(angle,1,0.1,0);
-    glBegin(GL_POLYGON);
-        glVertex2f(-0.5,0);
-        glVertex2f(-0.8,0);
-        glVertex2f(-0.8,0.5);
-        glVertex2f(-0.5,0.5);
-    glEnd();
-    glPopMatrix();
-
+        if(pk<0)
+            pk+=2*dy;
+        else
+        {
+            pk=pk+2*(dy-dx);
+            y++;
+        }
+        x++;
+        // glColor3f(0,1,0);
+        // glBegin(GL_POINTS);
+        // glVertex2f(x,y);
+        // glEnd();       
+    }
     glFlush();
 }
 
+void init(void)
+{
+    glClear ( GL_COLOR_BUFFER_BIT ) ;
+    glClearColor(0.7,0.7,0.7,0.7);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(-100,100,-100,100);
+}
 
-int main (int argc, char** argv) 
-{ 
-    glutInit(&argc, argv); 
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB); 
-      
-    // giving window size in X- and Y- direction 
-    glutInitWindowSize(1366, 768); 
-    glutInitWindowPosition(0, 0); 
-      
-    // Giving name to window 
-    glutCreateWindow("Circle Drawing"); 
-      
+void main(int argc,char** argv)
+{
+    printf("enter x1,y1,x2,y2\n");
+    scanf("%d%d%d%d",&x1,&y1,&x2,&y2);
+    glutInit(&argc, argv);
+    glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize (500, 500);
+    glutInitWindowPosition (100, 100);
+    glutCreateWindow ("Breshanman Line Algorithm ");
+    init ();
     glutDisplayFunc(display);
-    glutTimerFunc(10,update,0);
-    glutMainLoop(); 
-} 
+    glutMainLoop();
+}
